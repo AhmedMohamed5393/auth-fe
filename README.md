@@ -6,6 +6,14 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
 
 In the project directory, you can run:
 
+
+### With docker
+### `docker-compose up -d --build`
+
+Runs the app using docker compose and its the docker file instead of using the following scripts
+
+
+### Without docker
 ### `npm start`
 
 Runs the app in the development mode.\
