@@ -1,0 +1,11 @@
+version: "3.8"
+services:
+  frontend:
+    build: .
+    ports:
+      - "${REACT_APP_PORT}:${REACT_APP_DOCKER_PORT}"
+    networks: 
+      - auth_fe
+
+networks:
+  auth_fe: {}
