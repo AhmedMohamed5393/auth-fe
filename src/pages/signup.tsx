@@ -1,17 +1,29 @@
-import { Card, Input, Button, Form, Typography } from "antd";
-import { useDispatch } from "react-redux";
+import { Card, Input, Button, Form, Typography, message } from "antd";
+import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { AppDispatch } from "../store";
+import { AppDispatch, RootState } from "../store";
 import { signUp } from "../store/slices/auth";
+import { useEffect } from "react";
 
 const { Title, Text, Link } = Typography;
 
 const Signup = () => {
   const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
+  const { error, loading } = useSelector((state: RootState) => state.auth);
 
-  const onFinish = (values: any) => {
-    dispatch(signUp(values));
+  useEffect(() => {
+    if (error) {
+      message.error(error);
+    }
+  }, [error]);
+
+  const onFinish = async (values: { name: string; email: string; password: string }) => {
+    const result = await dispatch(signUp(values));
+    if (signUp.fulfilled.match(result)) {
+      message.success("Signup successful");
+      navigate("/");
+    }
   };
 
   return (
@@ -31,7 +43,7 @@ const Signup = () => {
             <Input.Password placeholder="Enter your password" />
           </Form.Item>
 
-          <Button type="primary" htmlType="submit" block>
+          <Button type="primary" htmlType="submit" block loading={loading}>
             Sign Up
           </Button>
 

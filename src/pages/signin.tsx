@@ -1,17 +1,29 @@
-import { Card, Input, Button, Form, Typography } from "antd";
-import { useDispatch } from "react-redux";
+import { Card, Input, Button, Form, Typography, message } from "antd";
+import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { AppDispatch } from "../store";
+import { AppDispatch, RootState } from "../store";
 import { signIn } from "../store/slices/auth";
+import { useEffect } from "react";
 
 const { Title, Text, Link } = Typography;
 
 const Signin = () => {
   const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
+  const { error, loading } = useSelector((state: RootState) => state.auth);
 
-  const onFinish = (values: any) => {
-    dispatch(signIn(values));
+  useEffect(() => {
+    if (error) {
+      message.error(error);
+    }
+  }, [error]);
+
+  const onFinish = async (values: { email: string; password: string }) => {
+    const result = await dispatch(signIn(values));
+    if (signIn.fulfilled.match(result)) {
+      message.success("Login successful");
+      navigate("/");
+    }
   };
 
   return (
@@ -25,7 +37,7 @@ const Signin = () => {
           <Form.Item name="password" label="Password" rules={[{ required: true, message: "Please enter your password" }]}>
             <Input.Password placeholder="Enter your password" />
           </Form.Item>
-          <Button type="primary" htmlType="submit" block>
+          <Button type="primary" htmlType="submit" block loading={loading}>
             Sign In
           </Button>
           <Text>
